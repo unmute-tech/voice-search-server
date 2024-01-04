@@ -1,26 +1,15 @@
 import click
-import wave
+import librosa
 
 import grpc
 from messages.voice_search_server_pb2 import RecognitionConfig, StreamingRecognizeRequest
 from messages.voice_search_server_pb2_grpc import SpeechStub
- 
 
-def chunks(wav):
-    while True:
-        chunk = wav.readframes(16384)
-        if len(chunk) == 0:
-            break
-        yield chunk
 
 def requests(path):
-    wav = wave.open(path, "rb")
-    sample_rate = wav.getframerate()
-    config = RecognitionConfig()
-
-    yield StreamingRecognizeRequest(streaming_config=config)
-    for chunk in chunks(wav):
-        yield StreamingRecognizeRequest(audio_content=chunk) 
+    audio, _ = librosa.load(path, mono=True, sr=16000)
+    pcm = (audio * 32767).astype('<u2').tobytes()
+    yield StreamingRecognizeRequest(audio_content=pcm)
 
 
 @click.command()

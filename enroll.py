@@ -1,5 +1,5 @@
 import click
-import wave
+import librosa
 
 import grpc
 from messages.voice_search_server_pb2 import RecognitionConfig, EnrollRequest
@@ -7,8 +7,8 @@ from messages.voice_search_server_pb2_grpc import SpeechStub
  
 
 def pcm(path):
-    wav = wave.open(path, 'rb')
-    return wav.readframes(wav.getnframes())
+    audio, _ = librosa.load(path, mono=True, sr=16000)
+    return (audio * 32767).astype('<u2').tobytes()
 
 @click.command()
 @click.argument('address')
