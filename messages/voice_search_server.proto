@@ -1,0 +1,94 @@
+syntax = 'proto3';
+
+package audiostream;
+
+service Speech {
+
+  rpc StreamingRecognize(stream StreamingRecognizeRequest) returns (stream StreamingRecognizeResponse) {}
+
+  rpc Enroll(EnrollRequest) returns (EnrollResponse) {}
+
+};
+
+
+message StreamingRecognizeRequest {
+
+  RecognitionConfig streaming_config = 1;
+
+  bytes audio_content = 2;
+
+};
+
+
+message RecognitionConfig {
+
+  int32 sample_rate_hertz = 1;
+
+  string model = 2;
+
+  string request_id = 3;
+
+};
+
+message StreamingRecognizeResponse {
+
+  Status error = 1;
+
+  repeated StreamingRecognitionResult results = 2;
+
+};
+
+message Status {
+
+  int32 code = 1;
+
+  string message = 2;
+
+};
+
+message WordAlignmentInfo {
+
+  string word = 1;
+
+  float start = 2;
+
+  float duration = 3;
+
+  float confidence = 4;
+
+}
+
+message StreamingRecognitionResult {
+
+  repeated SpeechRecognitionAlternative alternatives = 1;
+
+  repeated WordAlignmentInfo alignment = 2;
+
+  bool is_final = 3;
+
+}; 
+
+message SpeechRecognitionAlternative {
+
+  string transcript = 1;
+
+  float confidence = 2;
+};
+
+message EnrollRequest {
+
+  bytes audio_content = 1;
+
+  string label = 2;
+
+};
+
+message EnrollResponse {
+
+  string request_id = 1;
+
+  string transcript = 2;
+
+  string label = 3;
+
+};
