@@ -1,0 +1,5 @@
+model/HCLG.fst filter=lfs diff=lfs merge=lfs -text
+model/final.mdl filter=lfs diff=lfs merge=lfs -text
+model/xls_r_300m_18.onnx filter=lfs diff=lfs merge=lfs -text
+model/labels.pkl filter=lfs diff=lfs merge=lfs -text
+model/svm_pipeline.pkl filter=lfs diff=lfs merge=lfs -text
