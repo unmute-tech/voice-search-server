@@ -8,6 +8,8 @@ service Speech {
 
   rpc Enroll(EnrollRequest) returns (EnrollResponse) {}
 
+  rpc Retrain(RetrainRequest) returns (RetrainResponse) {}
+
 };
 
 
@@ -90,5 +92,15 @@ message EnrollResponse {
   string transcript = 2;
 
   string label = 3;
+
+};
+
+message RetrainRequest {
+
+}
+
+message RetrainResponse {
+
+  string message = 1;
 
 };

@@ -24,6 +24,11 @@ class SpeechStub(object):
                 request_serializer=messages_dot_voice__search__server__pb2.EnrollRequest.SerializeToString,
                 response_deserializer=messages_dot_voice__search__server__pb2.EnrollResponse.FromString,
                 )
+        self.Retrain = channel.unary_unary(
+                '/audiostream.Speech/Retrain',
+                request_serializer=messages_dot_voice__search__server__pb2.RetrainRequest.SerializeToString,
+                response_deserializer=messages_dot_voice__search__server__pb2.RetrainResponse.FromString,
+                )
 
 
 class SpeechServicer(object):
@@ -41,6 +46,12 @@ class SpeechServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Retrain(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_SpeechServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -53,6 +64,11 @@ def add_SpeechServicer_to_server(servicer, server):
                     servicer.Enroll,
                     request_deserializer=messages_dot_voice__search__server__pb2.EnrollRequest.FromString,
                     response_serializer=messages_dot_voice__search__server__pb2.EnrollResponse.SerializeToString,
+            ),
+            'Retrain': grpc.unary_unary_rpc_method_handler(
+                    servicer.Retrain,
+                    request_deserializer=messages_dot_voice__search__server__pb2.RetrainRequest.FromString,
+                    response_serializer=messages_dot_voice__search__server__pb2.RetrainResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -95,5 +111,22 @@ class Speech(object):
         return grpc.experimental.unary_unary(request, target, '/audiostream.Speech/Enroll',
             messages_dot_voice__search__server__pb2.EnrollRequest.SerializeToString,
             messages_dot_voice__search__server__pb2.EnrollResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Retrain(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/audiostream.Speech/Retrain',
+            messages_dot_voice__search__server__pb2.RetrainRequest.SerializeToString,
+            messages_dot_voice__search__server__pb2.RetrainResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

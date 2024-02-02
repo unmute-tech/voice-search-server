@@ -46,3 +46,10 @@ To run a query with a new recording, use the following command:
 ```bash
 python3 classify.py localhost:8080 query.wav
 ```
+
+## Retraining the ranker
+
+To retrain the ranker, use the following command:
+```bash
+python3 train_classifier.py localhost:8080
+```

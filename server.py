@@ -10,7 +10,7 @@ import wave
 
 from lib import create_asr, create_classifier
 
-from messages.voice_search_server_pb2 import SpeechRecognitionAlternative, StreamingRecognitionResult, StreamingRecognizeResponse, EnrollResponse
+from messages.voice_search_server_pb2 import SpeechRecognitionAlternative, StreamingRecognitionResult, StreamingRecognizeResponse, EnrollResponse, RetrainResponse
 import messages.voice_search_server_pb2_grpc as voice_search_server_pb2_grpc
 
 _ONE_DAY = datetime.timedelta(days=1)
@@ -30,7 +30,7 @@ class SpeechServicer(voice_search_server_pb2_grpc.SpeechServicer):
             pcm += request.audio_content
 
         transcript = self.asr.transcribe(pcm)
-        predictions = self.classifier.classify(transcript) 
+        predictions = self.classifier.classify(transcript)
 
         yield StreamingRecognizeResponse(results=[
             StreamingRecognitionResult(alternatives=[
@@ -57,6 +57,13 @@ class SpeechServicer(voice_search_server_pb2_grpc.SpeechServicer):
             request_id=request_id,
             transcript=transcript,
             label=label
+        )
+
+    def Retrain(self, request, context):
+        self.classifier.train(self.data_dir)
+
+        return RetrainResponse(
+            message='Model trained successfully'
         )
 
     def saveWav(self, request_id, pcm):
@@ -87,7 +94,7 @@ def _run_server(api_port, model_dir, data_dir):
     options = (("grpc.so_reuseport", 1),)
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1), options=options)
     voice_search_server_pb2_grpc.add_SpeechServicer_to_server(servicer, server)
-    
+
     server.add_insecure_port(f'[::]:{api_port}')
     server.start()
     _wait_forever(server)
@@ -113,7 +120,7 @@ def run_server(api_port, num_workers, model_dir, data_dir):
         worker.start()
         workers.append(worker)
     for worker in workers:
-        worker.join() 
+        worker.join()
 
 if __name__ == '__main__':
     run_server()
